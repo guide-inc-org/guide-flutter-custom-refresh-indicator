@@ -396,7 +396,7 @@ class CustomRefreshIndicatorState extends State<CustomRefreshIndicator>
     return false;
   }
 
-  bool _handleScrollEndNotification(ScrollEndNotification notification) {
+  bool _handleScrollEndNotification(ScrollNotification notification) {
     controller
       ..setIndicatorDragDetails(null)
       ..clearPhysicsState();
@@ -548,6 +548,12 @@ class CustomRefreshIndicatorState extends State<CustomRefreshIndicator>
     } else if (notification is ScrollEndNotification) {
       return _handleScrollEndNotification(notification);
     } else if (notification is UserScrollNotification) {
+      if (controller.isArmed && notification.direction == ScrollDirection.idle) {
+        return _handleScrollEndNotification(notification);
+      }
+      if (notification.direction == ScrollDirection.idle) {
+        _hide();
+      }
       return _handleUserScrollNotification(notification);
     }
 
